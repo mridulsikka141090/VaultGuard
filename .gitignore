@@ -1,5 +1,0 @@
-node_modules
-.env
-
-# Credentials for firebase will be present as secrets
-firebase_credentials.json
