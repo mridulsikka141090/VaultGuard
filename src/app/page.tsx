@@ -19,8 +19,6 @@ export default function Home() {
     }
   };
 
-  console.log('User:', user);
-  console.log('Files:', files);
   if (loading || fileLoading) return <div>Loading...</div>;
   return (
     <div className="min-h-screen bg-gray-200 px-4 py-10">
@@ -34,6 +32,8 @@ export default function Home() {
                      file:text-sm file:font-semibold
                      file:bg-blue-600 file:text-white
                      hover:file:bg-blue-700"
+          onChange={handleChange}
+          accept="image/*,video/*"
         />
       </div>
 
