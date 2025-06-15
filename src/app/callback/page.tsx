@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Spinner from '@/components/Spinner';
 
 export default function CallbackPage() {
   const router = useRouter();
-
   useEffect(() => {
-    const params = useSearchParams();
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
     const idToken = params.get('id_token');
     const accessToken = params.get('access_token');
 
