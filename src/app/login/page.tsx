@@ -9,7 +9,7 @@ const LoginPage = () => {
     const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
     const redirectUri = process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI;
 
-    const loginUrl = `${domain}/login?client_id=${clientId}&response_type=token&scope=email+openid+phone&redirect_uri=${redirectUri}`;
+    const loginUrl = `${domain}/login?client_id=${clientId}&response_type=token&scope=aws.cognito.signin.user.admin+email+openid+phone+profile&redirect_uri=${redirectUri}`;
 
     window.location.href = loginUrl;
   }, []);
