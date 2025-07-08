@@ -2,6 +2,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import axios from 'axios';
 
 interface PresignedUrlResponse {
   url: string;
@@ -10,6 +11,7 @@ interface PresignedUrlResponse {
 interface UseFileUploadOptions {
   onSuccess?: () => void;
   onError?: (error: Error) => void;
+  onProgress?: (progress: number) => void; // 0–100%
 }
 
 /**
@@ -46,17 +48,23 @@ export function useFileUpload(apiUrl: string, options?: UseFileUploadOptions) {
 
         const { url }: PresignedUrlResponse = await presignedRes.json();
 
-        // Step 2: Upload the file directly to S3 using the presigned URL
-        const s3UploadRes = await fetch(url, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': file.type,
+
+        try {
+          // Step 2: Upload the file to S3 with progress tracking
+          await axios.put(url, file, {
+            headers: { 'Content-Type': file.type },
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              options?.onProgress?.(percent);
+            }
           },
-          body: file,
         });
 
-        if (!s3UploadRes.ok) {
-          throw new Error(`S3 upload failed: ${s3UploadRes.status}`);
+      } catch (uploadError) {
+          console.error('Could not update to S3:', uploadError);
+          options?.onError?.(uploadError as Error);
+          return;
         }
 
         options?.onSuccess?.();
